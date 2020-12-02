@@ -1,0 +1,5 @@
+---
+applications:
+- name:    AutoAssignPwd
+  memory:  800M
+  command: node --max-http-header-size 32000 app.js
