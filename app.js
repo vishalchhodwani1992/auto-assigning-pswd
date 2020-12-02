@@ -60,6 +60,17 @@ function loadResultTemplate(data) {
      }
  }
 
+app.get("/getRandomPassword", function(req, res){
+    let password = generateRandomPassword()
+    console.log("Random generated password is====", password)
+    res.status(200).json({ "msg": "Password generation successful", "password":password });
+  })
+  
+  function generateRandomPassword(){
+    let generatedPassword = Math.random().toString(36).slice(2)
+    //To be added: Encryption for password 
+    return generateRandomPassword;
+  }
 
 function sendEmail(msg_txt, msg_html, schoolname) {
        // SAMPLE URL:  &program=npower&entity=school&entity_name=AAA&dna_release=20180202&flexitag=tst&redirect_url=explorer-cloud
