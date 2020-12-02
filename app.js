@@ -6,7 +6,7 @@ const mail = require('./mail');
 
 // Nodemailer
 // const transporter = require('./transport');
-const to_ = [{"email":"vishal_chhodwani@persistent.com"}, {"email":"vishal.chhodwani1992@gmail.com"}];
+const to_ = [{"email":"vishal.chhodwani1992@gmail.com"}];
 const subject_ = 'New Password Test Emails';
 
 
