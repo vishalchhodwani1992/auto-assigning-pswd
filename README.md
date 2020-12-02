@@ -1,1 +1,1 @@
-# auto-assigning-pswd
+# auto-assigning-pwd
