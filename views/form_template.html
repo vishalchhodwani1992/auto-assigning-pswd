@@ -14,11 +14,15 @@
       <meta property="og:site_name" content="Change Password">
       <title>Change Password</title>
      
-      <script src="//1.www.s81c.com/common/v18/js/www.js"></script>
+      <!-- <script src="//1.www.s81c.com/common/v18/js/www.js"></script>
       <link href="//1.www.s81c.com/common/v18/css/www.css" rel="stylesheet">
       <link href="//1.www.s81c.com/common/v18/css/forms.css" rel="stylesheet">
       <script src="//1.www.s81c.com/common/v18/js/forms.js"></script>
-      <link href="//1.www.s81c.com/common/v18/css/grid-fluid.css" rel="stylesheet">
+      <link href="//1.www.s81c.com/common/v18/css/grid-fluid.css" rel="stylesheet"> -->
+
+      <link rel="stylesheet" href="styles.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
       <meta charset="utf-8" data-react-helmet="true">
       <meta name="description" content="Change Password" data-react-helmet="true">
@@ -40,7 +44,80 @@
    <body id="root" class="body-container">
       <noscript>You need to enable JavaScript to run this app.</noscript>
       <div id="top-container">
-         <h1>Change Password</h1>
+         <!-- <h1>Change Password</h1> -->
+
+         <div id="box">
+            <form id="myform-search" method="get" autocomplete="off" action="/change-password">
+            <h1>Change Password <span>choose a good one!</span></h1>
+            <form>
+              <p>
+                <input type="password" value="" placeholder="Enter Password" id="p" class="password">
+                <!-- <i class="far fa-eye" id="togglePassword"></i>
+                <button class="unmask" type="button"></button>
+                
+                <input type="password" id="pass_log_id"/>   -->
+                <span toggle="#password-field" id="hello" class="fa fa-fw fa-eye field_icon toggle-password"></span>
+                  
+              </p>
+              <p>     
+                <input type="password" value="" placeholder="Confirm Password" id="p-c" class="password">
+                <!-- <button class="unmask" type="button"></button> -->
+                <span toggle="#password-field" id="hello" class="fa fa-fw fa-eye field_icon toggle-password"></span>
+                <br/>
+              <div id="strong"><span></span></div>
+              
+              <div id="valid"></div>
+              <br/>
+              <small>Must be 6+ characters long and contain at least 1 upper case letter, 1 number, 1 special character</small>
+              <br/>
+              <input type="submit" value="Submit" class="submit">
+              </p>
+            </form>
+          </div>
+    
+          <script>
+            //alert('Form submitted!');
+            //$('.unmask').click(function(){
+            //  $('.unmask').on('click', function(){  
+            //   if($(this).prev('input').attr('type') == 'password')
+            //     $(this).prev('input').prop('type', 'text');  
+            //   else
+            //     $(this).prev('input').prop('type', 'password');  
+            //   return false;
+            // });
+
+            $("body").on('click', '.toggle-password', function() {
+               $(this).toggleClass("fa-eye fa-eye-slash");
+               var input = $(".password");
+               if (input.attr("type") === "password") {
+                  input.attr("type", "text");
+               } else {
+                  input.attr("type", "password");
+               }
+
+               });
+          //Begin supreme heuristics 
+          $('.password').on('keyup',function (){
+            var p_c = $('#p-c');
+            var p = $('#p');
+            console.log(p.val() + p_c.val());
+          if(p.val().length > 0){
+            if(p.val() != p_c.val()) {
+              $('#valid').html("Passwords Don't Match");
+            } else {
+              $('#valid').html('');  
+            }
+              var s = 'weak'
+          if(p.val().length > 5 && p.val().match(/\d+/g))
+            s = 'medium';
+          if(p.val().length > 6 && p.val().match(/[^\w\s]/gi))
+            s = 'strong';   
+            $('#strong span').addClass(s).html(s);
+            }
+          });
+        </script>
+
+
       </div>
 
       <script>
