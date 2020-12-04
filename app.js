@@ -62,7 +62,7 @@ function loadResultTemplate(data) {
 
 app.get("/getRandomPassword", function(req, res){
     let password = generateRandomPassword()
-    console.log("Random generated password is====", password)
+    console.log("Random generated password is =", password)
     res.status(200).json({ "msg": "Password generation successful", "password":password });
   })
   
