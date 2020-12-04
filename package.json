@@ -3,6 +3,7 @@
     "version": "0.0.0",
     "dependencies": {
         "@sendgrid/mail": "^7.2.5",
+        "ad": "^0.3.2",
         "body-parser": "^1.19.0",
         "express": "^4.16.3",
         "http": "0.0.0"

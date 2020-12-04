@@ -4,6 +4,8 @@ const bodyParser = require('body-parser')
 const myPort = 1113; // ** CHANGE PORT **
 const fs = require('fs');
 const mail = require('./mail');
+const AD = require('ad');
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 // Nodemailer
@@ -48,6 +50,40 @@ function loadFormTemplate() {
      }
  }
 
+ app.get("/create-test-user", function(req, res) {
+     
+    try {
+        const ad = new AD({
+            url: "ldap://40.71.23.192",
+            user: "tanisha@demo.com",
+            pass: "Tanisha123456"
+        });
+         
+        
+        ad.user().add({
+            userName: 'test100',
+            firstName: 'name100',
+            lastName: 'last100',
+            password: 'Test@123'
+        }).then(users => {
+            console.log('User created success:', users);
+        }).catch(err => {
+            console.log('User created failed:', err);
+        });;
+        
+    } catch (error) {
+        console.log("error==", error);
+    }
+
+    // ad.user().get().then(users => {
+    //     console.log('Your users:', users);
+    // }).catch(err => {
+    //     console.log('Error getting users:', err);
+    // });
+
+    res.status(200).json({ "status": 200, "msg": "Test User created successfully" });
+
+ })
     
 app.post("/password-changed-success", function (req, res) {
      
@@ -123,7 +159,9 @@ Persistent IT Team</p>
                     </div>`
     sendCreateUserEmail(personalEmailInput, managerEmailInput, subject, email_txt, email_html);
     sendDataToActiveDirectory(req.body, password);
-    res.status(200).json({ "status": 200, "msg": "User created successfully", "password":password });
+
+    res.redirect("/create-user");
+    // res.status(200).json({ "status": 200, "msg": "User created successfully", "password":password });
   });
   
 app.get("/getRandomPassword", function(req, res){
@@ -154,6 +192,7 @@ app.get("/getRandomPassword", function(req, res){
 
     mail.send(mailOptions)
   }
+
 
   
 app.post("/sendPasswordChangedEmail", function(req, res){
