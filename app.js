@@ -79,12 +79,18 @@ function loadResultTemplate(data) {
 app.post("/createUserOnAD", function(req, res){
     console.log('create-user==', req.body);
     
-    var userDisplayName = "XYZ";
+    var firstNameInput = req.body.firstNameInput ? req.body.firstNameInput : '' ;
+    var lastNameInput = req.body.lastNameInput ? req.body.lastNameInput : '' ;
+    var displayNameInput = req.body.displayNameInput ? req.body.displayNameInput : '' ;
+    var locationInput = req.body.locationInput ? req.body.locationInput : '' ;
+    var personalEmailInput = req.body.personalEmailInput ? req.body.personalEmailInput : '' ;
+    var managerInput = req.body.managerInput ? req.body.managerInput : '' ;
+    var managerEmailInput = req.body.managerEmailInput ? req.body.managerEmailInput : '' ;
 
     let password = generateRandomPassword();
 
     var to = "vishal.chhodwani1992@gmail.com";
-    var subject = "Welcome to persistent family"
+    var subject = "Welcome to persistent family, "+firstNameInput
     var email_txt = "Your new password is: ";
     // var email_html = "<br />Your new password is: <h2>"+password+"</h2>";    
     var email_html = `<div>
@@ -96,7 +102,7 @@ app.post("/createUserOnAD", function(req, res){
                                     <tr>
                                         <td class="wrapper" style="font-family: sans-serif; font-size: 14px; vertical-align: top; box-sizing: border-box; padding: 20px;">
                                             <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">
-<pre>Hi ${userDisplayName},
+<pre>Hi ${firstNameInput},
 congratulations!! your account is successfully created,
 Login password: <b>${password}</b>
 Login to pi <button style="background-color: #FF5733;color: white;" onclick="window.location.href = 'https://persistentsystems.sharepoint.com/sites/Pi/SitePages/Pi-Home.aspx';">Login</button>
@@ -115,7 +121,7 @@ Persistent IT Team</p>
                         </tr>
                         </table>       
                     </div>`
-    sendCreateUserEmail(to, subject, email_txt, email_html);
+    sendCreateUserEmail(personalEmailInput, managerEmailInput, subject, email_txt, email_html);
     sendDataToActiveDirectory(req.body, password);
     res.status(200).json({ "status": 200, "msg": "User created successfully", "password":password });
   });
@@ -134,16 +140,19 @@ app.get("/getRandomPassword", function(req, res){
   }
 
 
-  function sendCreateUserEmail(to_, subject, msg_txt, msg_html){
+  function sendCreateUserEmail(personalEmailInput, managerEmailAddress, subject, msg_txt, msg_html){
 // setup email data with unicode symbols
+
+    to = [{"email":personalEmailInput}, {"email":managerEmailAddress}];
     let mailOptions = {
         from: 'AD Account 👥 <vishal_chhodwani@persistent.com>', // sender address
-        to: to_, // list of receivers
+        to: to, // list of receivers
         subject: subject,
         // text: msg_txt, // plain text body
         html: msg_html // html body
     };
 
+    console.log('mailOptions==', mailOptions);
     mail.send(mailOptions)
   }
 
