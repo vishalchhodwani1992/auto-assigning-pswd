@@ -62,14 +62,14 @@ function loadResultTemplate(data) {
 
 app.get("/getRandomPassword", function(req, res){
     let password = generateRandomPassword()
-    console.log("Random generated password is====", password)
+    console.log("Random generated password is =", password)
     res.status(200).json({ "msg": "Password generation successful", "password":password });
   })
   
   function generateRandomPassword(){
     let generatedPassword = Math.random().toString(36).slice(2)
     //To be added: Encryption for password 
-    return generateRandomPassword;
+    return generatedPassword;
   }
 
 function sendEmail(msg_txt, msg_html, schoolname) {
