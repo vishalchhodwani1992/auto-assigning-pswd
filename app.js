@@ -69,7 +69,7 @@ app.get("/getRandomPassword", function(req, res){
   function generateRandomPassword(){
     let generatedPassword = Math.random().toString(36).slice(2)
     //To be added: Encryption for password 
-    return generateRandomPassword;
+    return generatedPassword;
   }
 
 function sendEmail(msg_txt, msg_html, schoolname) {
