@@ -1,9 +1,11 @@
 const express = require("express");
 const app = express();
+const bodyParser = require('body-parser')
 const myPort = 1113; // ** CHANGE PORT **
 const fs = require('fs');
 const mail = require('./mail');
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 // Nodemailer
 // const transporter = require('./transport');
 const to_ = [{"email":"vishal.chhodwani1992@gmail.com"}];
@@ -71,6 +73,21 @@ app.get("/getRandomPassword", function(req, res){
     //To be added: Encryption for password 
     return generatedPassword;
   }
+
+app.post("/sendPasswordChangedEmail", function(req, res){
+    let user = req.body
+    console.log("Request is =====", req.body)
+    console.log("User is ====", user)
+
+    if (!user) {
+        res.status(400).json({ "msg": "User not provided" });
+    }else{
+        let userEmailAddress = user.userEmailAddress;
+        let managerEmailAddress = user.managerEmailAddress;
+        //sendEmail function call will be here
+        res.status(200).json({"msg": "Email has been sent successfully"})
+    }
+})
 
 function sendEmail(msg_txt, msg_html, schoolname) {
        // SAMPLE URL:  &program=npower&entity=school&entity_name=AAA&dna_release=20180202&flexitag=tst&redirect_url=explorer-cloud
