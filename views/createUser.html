@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New User</title>
+
+    <link rel="stylesheet" href="createUser.css">
+    <script src="createUserValidate.js" ></script>
+</head>
+<body>
+    <h1>Create New User</h1>
+    <div>
+        <form name="userForm" onsubmit="return validateForm()" action="/createUser" method="POST">
+            <div id="nameDiv" class="input-group">
+                <span class="inputLabel">
+                    <label>Name</label>
+                </span>
+                <div class="inputDiv">
+                    <input id="firstNameInput" class="form-input" type="text" name="First Name" placeholder="First Name">
+                </div>
+                <div class="inputDiv">
+                    <input id="lastNameInput" class="form-input" type="text" name="Last Name" placeholder="Last Name">
+                </div>
+                <div class="inputDiv">
+                    <input id="displayNameInput" class="form-input" type="text" name="Display Name" placeholder="Display Name">
+                </div>
+            </div>
+            <div id="infoDiv" class="input-group">
+                <span class="inputLabel">
+                    <label>Location</label>
+                </span>
+                <div class="inputDiv">
+                    <input id="locationInput" class="form-input" type="text" name="Location">
+                </div>
+                <span class="inputLabel">
+                    <label>Personal Email Id</label>
+                </span>
+                <div class="inputDiv">
+                    <input id="personalEmailInput" class="form-input" type="email" name="Personal Email">
+                </div>
+            </div>
+            <div id="managerInfoDiv" class="input-group">
+                <span class="inputLabel">
+                    <label>Manager</label>
+                </span>
+                <div class="inputDiv">
+                    <input id="managerInput" class="form-input" type="text" name="Manager">
+                </div>
+                <span class="inputLabel">
+                    <label>Manager Email Id</label>
+                </span>
+                <div class="inputDiv">
+                    <input id="managerEmailInput" class="form-input" type="email" name="Manager Email">
+                </div>
+            </div>
+            <div>
+                <input id="submitForm" type="submit" value="Create">
+            </div>
+        </form>
+    </div>
+</body>
+</html>
