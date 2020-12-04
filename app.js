@@ -152,7 +152,6 @@ app.get("/getRandomPassword", function(req, res){
         html: msg_html // html body
     };
 
-    console.log('mailOptions==', mailOptions);
     mail.send(mailOptions)
   }
 

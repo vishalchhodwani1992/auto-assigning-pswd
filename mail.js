@@ -5,7 +5,7 @@ sgMail.setApiKey(config.sendgrid_api_key);
 function send(msg) {
     
     sgMail.send(msg).then((response) => {
-        // console.log('response==', response);
+        console.log('response==', response);
     }, error => {
         if (error.response) {
             console.log("2.error==", error.response.body)
