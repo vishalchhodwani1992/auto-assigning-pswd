@@ -6,6 +6,12 @@ const fs = require('fs');
 const mail = require('./mail');
 const AD = require('ad');
 
+const crypto = require('crypto');
+const algorithm = 'aes-256-ctr';
+const secretKey = 'vOVH6sdmpNWjRRIqCc7rdxs01lwHzfr3';
+const iv = crypto.randomBytes(16);
+const myIv = iv.toString('hex');
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 // Nodemailer
@@ -15,6 +21,8 @@ const subject_ = 'New Password Test Emails';
 
 
 app.use(express.static(__dirname + '/views'));
+app.use(express.static(__dirname + '/public'));
+
 
 
 app.get("/create-user", function (req, res) {
@@ -25,8 +33,9 @@ app.get("/create-user", function (req, res) {
 
 // render form
 app.get("/change-password", function (req, res) {
-    console.log("Handle request to proxy...");
-    var f = loadFormTemplate();
+
+    var userName = req.query.user ? req.query.user : "";
+    var f = loadFormTemplate(userName);
     res.writeHeader(200, {"Content-Type": "text/html"});
     res.end(f);
 });
@@ -41,9 +50,10 @@ function loadCreateUserForm(){
      }
 }
 
-function loadFormTemplate() {
+function loadFormTemplate(userName) {
     try {  
         var file = fs.readFileSync('./views/form_template.html', 'utf8');
+        file = file.replace('##USERNAME##', userName);
         return file;
      } catch(e) {
          console.log('Error:', e.stack);
@@ -54,7 +64,7 @@ function loadFormTemplate() {
      
     try {
         const ad = new AD({
-            url: "ldap://40.71.23.192",
+            url: "ldap://10.0.0.4",
             user: "tanisha@demo.com",
             pass: "Tanisha123456"
         });
@@ -69,24 +79,27 @@ function loadFormTemplate() {
             console.log('User created success:', users);
         }).catch(err => {
             console.log('User created failed:', err);
-        });;
+        });
         
     } catch (error) {
         console.log("error==", error);
     }
 
-    // ad.user().get().then(users => {
-    //     console.log('Your users:', users);
-    // }).catch(err => {
-    //     console.log('Error getting users:', err);
-    // });
-
     res.status(200).json({ "status": 200, "msg": "Test User created successfully" });
 
  })
     
-app.post("/password-changed-success", function (req, res) {
+app.post("/change-password-success", function (req, res) {
      
+    var currentPassword = req.body.currentPassword ? req.body.currentPassword : "";
+    var newPassword = req.body.newPassword ? req.body.newPassword : "";
+    var confirmPassword = req.body.confirmPassword ? req.body.confirmPassword : "";
+    var userName = req.query.user ? req.query.user : "";
+
+    var decryptUserName = decrypt(userName);
+    
+    changePasswordInAd(currentPassword, newPassword, confirmPassword, decryptUserName);
+
     var data = "<br /><h2>Password change successfully</h2>";
  
     var subject = "Your password has been changed"
@@ -102,31 +115,35 @@ app.post("/password-changed-success", function (req, res) {
 
 
 function loadResultTemplate(data) {
-    console.log("Loading template...");
      try{
         var file = fs.readFileSync('./views/result_template.html', 'utf8');
-        console.log("File open");  
          return file;
      } catch(e) {
          console.log('Error:', e.stack);
      }
  }
 
+ 
+app.get("/", function(req, res){
+
+    res.redirect("/create-user");
+});
+
 app.post("/createUserOnAD", function(req, res){
-    console.log('create-user==', req.body);
     
-    var firstNameInput = req.body.firstNameInput ? req.body.firstNameInput : '' ;
-    var lastNameInput = req.body.lastNameInput ? req.body.lastNameInput : '' ;
-    var displayNameInput = req.body.displayNameInput ? req.body.displayNameInput : '' ;
-    var locationInput = req.body.locationInput ? req.body.locationInput : '' ;
-    var personalEmailInput = req.body.personalEmailInput ? req.body.personalEmailInput : '' ;
-    var managerInput = req.body.managerInput ? req.body.managerInput : '' ;
-    var managerEmailInput = req.body.managerEmailInput ? req.body.managerEmailInput : '' ;
+    var firstName = req.body.firstNameInput ? req.body.firstNameInput : '' ;
+    var lastName = req.body.lastNameInput ? req.body.lastNameInput : '' ;
+    var displayName = req.body.displayNameInput ? req.body.displayNameInput : '' ;
+    var location = req.body.locationInput ? req.body.locationInput : '' ;
+    var personalEmail = req.body.personalEmailInput ? req.body.personalEmailInput : '' ;
+    var manager = req.body.managerInput ? req.body.managerInput : '' ;
+    var managerEmail = req.body.managerEmailInput ? req.body.managerEmailInput : '' ;
 
     let password = generateRandomPassword();
+    var personalEmailEncrypted = encrypt(personalEmail);
 
-    var to = "vishal.chhodwani1992@gmail.com";
-    var subject = "Welcome to persistent family, "+firstNameInput
+    console.log('personalEmailEncrypted==', personalEmailEncrypted);
+    var subject = "Welcome to persistent family, "+firstName
     var email_txt = "Your new password is: ";
     // var email_html = "<br />Your new password is: <h2>"+password+"</h2>";    
     var email_html = `<div>
@@ -138,10 +155,11 @@ app.post("/createUserOnAD", function(req, res){
                                     <tr>
                                         <td class="wrapper" style="font-family: sans-serif; font-size: 14px; vertical-align: top; box-sizing: border-box; padding: 20px;">
                                             <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">
-<pre>Hi ${firstNameInput},
+<pre>Hi ${firstName},
 congratulations!! your account is successfully created,
 Login password: <b>${password}</b>
-Login to pi <button style="background-color: #FF5733;color: white;" onclick="window.location.href = 'https://persistentsystems.sharepoint.com/sites/Pi/SitePages/Pi-Home.aspx';">Login</button>
+You can change your password: <a href="http://localhost:1113/change-password/?user=${personalEmailEncrypted}">Reset Password</a>
+Login to pprtal: <button style="background-color: #FF5733;color: white;" onclick="window.location.href = 'https://persistentsystems.sharepoint.com/sites/Pi/SitePages/Pi-Home.aspx';">Login</button>
 Regards,
 Persistent IT Team</p>
 </pre>
@@ -157,8 +175,8 @@ Persistent IT Team</p>
                         </tr>
                         </table>       
                     </div>`
-    sendCreateUserEmail(personalEmailInput, managerEmailInput, subject, email_txt, email_html);
-    sendDataToActiveDirectory(req.body, password);
+    sendCreateUserEmail(personalEmail, managerEmail, subject, email_txt, email_html);
+    createUserOnAD(firstName, lastName, displayName, location, personalEmail, manager, managerEmail, password);
 
     res.redirect("/create-user");
     // res.status(200).json({ "status": 200, "msg": "User created successfully", "password":password });
@@ -193,8 +211,61 @@ app.get("/getRandomPassword", function(req, res){
     mail.send(mailOptions)
   }
 
+function createUserOnAD(firstName, lastName, displayName, location, personalEmail, manager, managerEmail, password){
 
+    try {
+        const ad = new AD({
+            url: "ldap://10.0.0.4",
+            user: "tanisha@demo.com",
+            pass: "Tanisha123456"
+        });
+         
+        var toSendData = {
+            "userName": personalEmail,
+            "firstName": firstName,
+            "lastName": lastName,
+            "displayName": displayName,
+            "workLocation": location,
+            "personalEmail": personalEmail,
+            "manager": manager,
+            "managerEmail": managerEmail,
+            "password": password
+        }
+        
+        
+        ad.user(toSendData).add().then(users => {
+            console.log('User created success:', users);
+        }).catch(err => {
+            console.log('User created failed:', err);
+        });
+        
+    } catch (error) {
+        console.log("error==", error);
+    }
+}
   
+function changePasswordInAd(currentPassword, newPassword, confirmPassword, userName){
+
+    console.log('currentPassword==', currentPassword);
+    console.log('newPassword==', newPassword);
+    console.log('confirmPassword==', confirmPassword);
+    console.log('userName==', userName);
+    
+    const ad = new AD({
+        url: "ldap://10.0.0.4",
+        user: "tanisha@demo.com",
+        pass: "Tanisha123456"
+    });
+
+    ad.user(userName).changePassword(newPassword)
+    .then((data) => {
+        console.log('changePasswordInAd==', data);
+    })
+    .catch((err) => {
+        console.log('changePasswordInAd:err==', err);
+    });
+}
+
 app.post("/sendPasswordChangedEmail", function(req, res){
     let user = req.body
     console.log("Request is =====", req.body)
@@ -225,9 +296,18 @@ function sendEmail(msg_txt, msg_html, schoolname) {
     mail.send(mailOptions)
 }
 
- function sendDataToActiveDirectory(){
+function encrypt(text) {
+    const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
+    const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
+    return encrypted.toString('hex');
+   }
 
- }
+function decrypt(text) {
+    const decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(myIv, 'hex'));
+    const decrpyted = Buffer.concat([decipher.update(Buffer.from(text, 'hex')), decipher.final()]);
+
+    return decrpyted.toString();
+   }
 
 // inspect all routes
 function inspectRoutes() {

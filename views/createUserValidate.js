@@ -8,4 +8,5 @@ function validateForm() {
             return false;
         }
     }
+    alert("User account is created successfully, user password is shared on user's personal email ID and manager's email ID")
 }
