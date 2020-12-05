@@ -199,7 +199,7 @@ app.get("/getRandomPassword", function(req, res){
 
     to = [{"email":personalEmailInput}, {"email":managerEmailAddress}];
     let mailOptions = {
-        from: 'AD Account 👥 <vishal_chhodwani@persistent.com>', // sender address
+        from: 'The Authenticators 👥 <vishal.chhodwani1992@gmail.com>', // sender address
         to: to, // list of receivers
         subject: subject,
         // text: msg_txt, // plain text body
@@ -279,7 +279,7 @@ function sendEmail(msg_txt, msg_html, schoolname) {
  
     // setup email data with unicode symbols
     let mailOptions = {
-        from: 'AD Account 👥 <vishal_chhodwani@persistent.com>', // sender address
+        from: 'The Authenticators 👥 <vishal.chhodwani1992@gmail.com>', // sender address
         to: to_, // list of receivers
         subject: subject, // Subject line
         text: msg_txt, // plain text body
