@@ -142,7 +142,6 @@ app.post("/createUserOnAD", function(req, res){
     let password = generateRandomPassword();
     var personalEmailEncrypted = encrypt(personalEmail);
 
-    console.log('personalEmailEncrypted==', personalEmailEncrypted);
     var subject = "Welcome to persistent family, "+firstName
     var email_txt = "Your new password is: ";
     // var email_html = "<br />Your new password is: <h2>"+password+"</h2>";    
@@ -184,7 +183,6 @@ Persistent IT Team</p>
   
 app.get("/getRandomPassword", function(req, res){
     let password = generateRandomPassword()
-    console.log("Random generated password is =", password)
     res.status(200).json({ "msg": "Password generation successful", "password":password });
   })
   
@@ -245,11 +243,6 @@ function createUserOnAD(firstName, lastName, displayName, location, personalEmai
 }
   
 function changePasswordInAd(currentPassword, newPassword, confirmPassword, userName){
-
-    console.log('currentPassword==', currentPassword);
-    console.log('newPassword==', newPassword);
-    console.log('confirmPassword==', confirmPassword);
-    console.log('userName==', userName);
     
     const ad = new AD({
         url: "ldap://10.0.0.4",
